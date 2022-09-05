@@ -12,18 +12,18 @@
   <body>
     <div class="scores>"><a href="highscores.html">View Highscores</a></div>
 
-    <div class="timer">Time: <span id="time">0</span></div>
+    <div class="timer">Time: <span id="time">60</span></div>
 
     <div class="wrapper">
         <div id="start-screen" class="start">
             <h1>Coding Quiz</h1>
             <p>
-                How many questions can you answer correctly in the given time? Submit your high score and try to beat it!
+                How many questions can you answer correctly in 60 seconds? Submit your high score and try to beat it!
             </p>
             <button id="start">Start Quiz</button>
         </div>
 
-        <div id="questions" class="hide">
+        <div id="question-box" class="hide">
             <h2 id="question-title"></h2>
             <div id="choices" class="choices"></div>
         </div>
@@ -37,7 +37,6 @@
             </p>
         </div>
     </div>
-    <script src="./js/questions.js"></script>
     <script src="./js/logic.js"></script>
   </body>
 </html>
