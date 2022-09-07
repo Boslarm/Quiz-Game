@@ -4,10 +4,13 @@ var timerEl = document.getElementById("time");
 var timeLeft = 59;
 var startScreen = document.getElementById("start-screen");
 var questionBox = document.getElementById("question-box");
-var choicesEl = document.getElementById('choices');
+var endScreen = document.getElementById("end-screen");
+
+
+hideEndScreen();
 
 // Timer & Start
-startBtn.addEventListener('click', countdown);
+startBtn.addEventListener("click", countdown);
 function countdown() {
     startScreen.style.display = "none"; //removes start screen
     questionBox.style.display = "block"; //shows questions
@@ -34,6 +37,12 @@ var questions = [
         choices: ['strings', 'booleans', 'alerts', 'numbers'],
         answer: 2
     },
+
+    {
+        title: "Inside which HTML element do we put the JavaScript?",
+        choices: ['<script>', '<scripting>', '<js>', '<javascript>'],
+        answer: 0
+    },
 ];
 
 
@@ -58,25 +67,93 @@ function displayQuestion() {
         // add an event listener 
         choiceTextEl.appendChild(choiceBtn);
     };
-};
+}; 
 
-choicesEl.addEventListener('click', function choiceClick(e){
-    if (!e.target.matches('button'))
+var choicesEl = document.getElementById('choices');
+
+choicesEl.addEventListener("click", function choiceClick(e){
+    e.preventDefault();
+    if (!e.target.matches("button"))
         return;
     var userAnswer = e.target.textContent; //could not figure this out without help from tutor and ta's need 'e' before to have mouse event
     var question = questions[questionIndex];
     var correct = question.choices[question.answer];
     var resultEl = document.getElementById("final-score")
-
+    //show the user that they are right and give time up to 60
     if (userAnswer === correct) {
         timeLeft +=3;
         resultEl.style.display = "block";
         resultEl.textContent = "Correct";
     }
+    // show the user they are wrong and subtract time
     else {
         timeLeft -=5;
         resultEl.style.display = "block";
         resultEl.textContent = "Wrong";
     }
+//go to next question (should this be within loop?)
+    questionIndex++
 
-})
+    var timerId;
+    if (questionIndex === questions.length) {
+        clearTimeout(timerId);
+        return showScore();
+    }
+    setTimeout(displayQuestion, 500); // i dont want to add a listener to this so I want to just automatically go to next question
+});
+//I need to clear the question to make way for the next input
+function clearResult(){
+    resultEl.style.display = "none";
+};
+
+//When quiz is over I want to show the user score
+    //game is over when there are no more questions OR no time remaining
+
+    //i'll make score the time remaining (this should be eaiser than adding value to correct)
+
+
+function showScore(){
+    questionBox.style.display = "none";
+    endScreen.style.display = "block"; //does this also needs to be at the begining in displayQuestion
+};
+function hideEndScreen(){ //but not score! (how do i show an element that is hidden within parent)
+    endScreen.style.display = "none";
+    
+};
+
+
+var submitBtn = document.getElementById("submit");
+var inputEl = document.getElementById("initials");
+
+submitBtn.addEventListener("click", function saveHighscore(e) {
+    e.preventDefault();
+    // get value of input box
+    var initials = inputEl.value.trim();
+    if (initials === "") {
+        alert("You must enter something :)")
+        return "";
+    }
+    else if (initials.length > 3) {
+        alert("No more than 3 letters")
+        return "";
+    }
+    // get saved scores from localstorage
+    var highscores;
+    if (JSON.parse(localStorage.getItem("highscores")) != null)
+        highscores = JSON.parse(window.localStorage.getItem("highscores"));
+    else
+        highscores = [];
+
+    // format new score object for current user
+    var score = {
+        initials: initials,
+        highscore: timeLeft
+    };
+    highscores.push(score);
+    // save to localstorage
+    localStorage.setItem("highscores", JSON.stringify(highscores));
+    // redirect to next page
+    location.href = "highscores.html";
+
+    saveHighscore();
+});
