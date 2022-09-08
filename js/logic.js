@@ -5,7 +5,7 @@ var timeLeft = 59;
 var startScreen = document.getElementById("start-screen");
 var questionBox = document.getElementById("question-box");
 var endScreen = document.getElementById("end-screen");
-
+  var resultEl = document.getElementById("final-score")
 
 hideEndScreen();
 
@@ -43,6 +43,21 @@ var questions = [
         choices: ['<script>', '<scripting>', '<js>', '<javascript>'],
         answer: 0
     },
+    {
+        title: "Where is the correct place to insert a JavaScript?",
+        choices: ['<body>', '<head>', 'both <body> and <head>'],
+        answer: 1
+    },
+    {
+        title: "How can you add a comment in a JavaScript?",
+        choices: ["<!-- -->", "//", "'"],
+        answer: 1
+    },
+    {
+        title: "Which event occurs when the user clicks on an HTML element?",
+        choices: ["onmouseover", "onchange", "onmouseclick", "onclick"],
+        answer: 3
+    },
 ];
 
 
@@ -78,7 +93,7 @@ choicesEl.addEventListener("click", function choiceClick(e){
     var userAnswer = e.target.textContent; //could not figure this out without help from tutor and ta's need 'e' before to have mouse event
     var question = questions[questionIndex];
     var correct = question.choices[question.answer];
-    var resultEl = document.getElementById("final-score")
+  
     //show the user that they are right and give time up to 60
     if (userAnswer === correct) {
         timeLeft +=3;
@@ -114,7 +129,16 @@ function clearResult(){
 
 function showScore(){
     questionBox.style.display = "none";
+    console.log(questionBox.style.display = "none")
     endScreen.style.display = "block"; //does this also needs to be at the begining in displayQuestion
+    resultEl.style.display = "block";
+
+    if (timeLeft < 0) {
+        resultEl.textContent = "0"
+    }
+    else {
+        resultEl.textContent = timeLeft
+    }
 };
 function hideEndScreen(){ //but not score! (how do i show an element that is hidden within parent)
     endScreen.style.display = "none";
@@ -144,7 +168,7 @@ submitBtn.addEventListener("click", function saveHighscore(e) {
     else
         highscores = [];
 
-    // format new score object for current user
+    // turn score into object/array for new user
     var score = {
         initials: initials,
         highscore: timeLeft
@@ -152,8 +176,8 @@ submitBtn.addEventListener("click", function saveHighscore(e) {
     highscores.push(score);
     // save to localstorage
     localStorage.setItem("highscores", JSON.stringify(highscores));
-    // redirect to next page
-    location.href = "highscores.html";
+    // forward to highscore page
+    location.href= "highscores.html";
 
     saveHighscore();
 });
